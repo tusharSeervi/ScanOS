@@ -27,6 +27,7 @@ class SubmissionListCreateView(generics.ListCreateAPIView):
     ordering_fields = [
     "created_at",
     "age",
+    "patient_name",
     ]
 
     ordering = [
