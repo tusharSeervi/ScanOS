@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 
+import { StatusActions } from "@/components/status-actions";
 import { StatusBadge } from "@/components/status-badge";
 import { useSubmission } from "@/hooks/use-submission";
 
@@ -10,7 +11,12 @@ export default function SubmissionDetailPage() {
 
   const id = params.id as string;
 
-  const { data, isLoading, isError } = useSubmission(id);
+  const {
+    data,
+    isLoading,
+    isError,
+    updateStatus,
+  } = useSubmission(id);
 
   if (isLoading) {
     return (
@@ -112,6 +118,20 @@ export default function SubmissionDetailPage() {
               </dd>
             </div>
           </dl>
+
+          <div className="border-t border-slate-200 px-6 py-5">
+            <h3 className="mb-3 text-sm font-semibold text-slate-900">
+              Workflow Actions
+            </h3>
+
+            <StatusActions
+              status={data.status}
+              isPending={updateStatus.isPending}
+              onStatusChange={(status) =>
+                updateStatus.mutate(status)
+              }
+            />
+          </div>
         </div>
       </div>
     </main>

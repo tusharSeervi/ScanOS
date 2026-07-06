@@ -1,11 +1,40 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
-import { getSubmission } from "@/services/submissions";
+import {
+  getSubmission,
+  updateSubmissionStatus,
+} from "@/services/submissions";
 
 export function useSubmission(id: number | string) {
-  return useQuery({
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
     queryKey: ["submission", id],
     queryFn: () => getSubmission(id),
     enabled: !!id,
   });
+
+  const updateStatus = useMutation({
+    mutationFn: (status: string) =>
+      updateSubmissionStatus(id, status),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["submission", id],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["submissions"],
+      });
+    },
+  });
+
+  return {
+    ...query,
+    updateStatus,
+  };
 }

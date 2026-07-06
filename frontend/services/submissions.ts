@@ -16,7 +16,22 @@ export async function getSubmissions(
 
   return data;
 }
-export async function getSubmission(id: number | string): Promise<Submission> {
+
+export async function getSubmission(
+  id: number | string
+): Promise<Submission> {
   const { data } = await api.get(`/submissions/${id}/`);
+  return data;
+}
+
+export async function updateSubmissionStatus(
+  id: number | string,
+  status: string
+): Promise<Submission> {
+  const { data } = await api.patch(
+    `/submissions/${id}/status/`,
+    { status }
+  );
+
   return data;
 }
