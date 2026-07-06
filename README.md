@@ -4,6 +4,14 @@ A full-stack patient intake queue application built with Django REST Framework a
 
 The backend exposes a REST API with validated business rules, while the frontend provides a responsive interface for viewing patient submissions.
 
+## Live Demo
+
+**Frontend**
+- https://scan-os.vercel.app
+
+**Backend API**
+- https://scanos-backend.onrender.com/api/
+
 ---
 
 ## Features
