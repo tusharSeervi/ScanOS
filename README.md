@@ -2,15 +2,17 @@
 
 A full-stack patient intake queue application built with Django REST Framework and Next.js. The application allows staff to browse patient intake submissions, review submission details, and manage the intake queue through filtering, sorting, and pagination.
 
-The backend exposes a REST API with validated business rules, while the frontend provides a responsive interface for viewing patient submissions.
+The backend exposes a REST API with validated business rules, while the frontend provides a responsive interface for reviewing and managing patient submissions.
+
+---
 
 ## Live Demo
 
-**Frontend**
-- https://scan-os.vercel.app
-
-**Backend API**
-- https://scanos-backend.onrender.com/api/
+| Resource | Link |
+|----------|------|
+| **Frontend** | https://scan-os.vercel.app |
+| **Backend API** | https://scanos-backend.onrender.com/api/submissions/ |
+| **Repository** | https://github.com/tusharSeervi/ScanOS |
 
 ---
 
@@ -25,19 +27,19 @@ The backend exposes a REST API with validated business rules, while the frontend
 - Sort submissions by supported fields
 - Server-side pagination
 - Business rule validation for status transitions
-- Seed command for loading sample data
+- Sample data seeding via a Django management command
 
 ### Frontend
 
-- Intake queue table
+- Intake queue dashboard
 - Submission detail page
 - Status badges
 - Status filtering
-- Sorting
+- Server-side sorting
 - Pagination
-- Loading states
-- Error states
+- Loading and error states
 - Dynamic routing for submission details
+- Workflow actions for submission status updates
 
 ---
 
@@ -80,6 +82,10 @@ frontend/
 ├── types/
 ├── lib/
 └── package.json
+
+docs/
+├── queue-view.png
+└── submission-detail.png
 ```
 
 ---
@@ -107,23 +113,17 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
----
-
 ### Database Migration
 
 ```bash
 python manage.py migrate
 ```
 
----
-
 ### Load Sample Data
 
 ```bash
 python manage.py seed_submissions
 ```
-
----
 
 ### Run Backend
 
@@ -133,7 +133,7 @@ python manage.py runserver
 
 Backend will be available at:
 
-```
+```text
 http://127.0.0.1:8000/
 ```
 
@@ -147,8 +147,6 @@ cd frontend
 npm install
 ```
 
----
-
 ### Run Frontend
 
 ```bash
@@ -157,7 +155,7 @@ npm run dev
 
 Frontend will be available at:
 
-```
+```text
 http://localhost:3000
 ```
 
@@ -166,7 +164,7 @@ http://localhost:3000
 ## API Endpoints
 
 | Method | Route | Description |
-|---------|-------|-------------|
+|--------|-------|-------------|
 | GET | `/api/submissions/` | Returns paginated submissions |
 | GET | `/api/submissions/<id>/` | Returns a single submission |
 | PATCH | `/api/submissions/<id>/` | Updates a submission status with transition validation |
@@ -178,14 +176,14 @@ http://localhost:3000
 The submission list supports the following query parameters:
 
 | Parameter | Description |
-|------------|-------------|
+|-----------|-------------|
 | `status` | Filter submissions by status |
 | `ordering` | Sort the results |
 | `page` | Navigate paginated results |
 
 Example:
 
-```
+```http
 GET /api/submissions/?status=new&ordering=-created_at&page=2
 ```
 
@@ -201,13 +199,13 @@ Supported ordering fields:
 
 Ascending:
 
-```
+```text
 ordering=patient_name
 ```
 
 Descending:
 
-```
+```text
 ordering=-created_at
 ```
 
@@ -215,7 +213,7 @@ ordering=-created_at
 
 ## Pagination
 
-Submission listings return Django REST Framework's paginated response:
+Submission listings return Django REST Framework's standard paginated response:
 
 ```json
 {
@@ -244,7 +242,7 @@ APPROVED    REJECTED
 
 The backend enforces these transition rules through the service layer.
 
-Invalid transitions are rejected with a validation error.
+Invalid transitions return a validation error.
 
 ---
 
@@ -252,11 +250,17 @@ Invalid transitions are rejected with a validation error.
 
 ### Queue View
 
-> _Add screenshot here._
+![Queue View](docs/queue-view.png)
+
+The intake dashboard displays patient submissions with server-side filtering, sorting, pagination, and quick navigation to submission details.
+
+---
 
 ### Submission Detail
 
-> _Add screenshot here._
+![Submission Detail](docs/submission-detail.png)
+
+The submission detail page displays patient information, workflow status, and available actions based on the current submission state.
 
 ---
 
@@ -268,11 +272,11 @@ Business rules for submission status transitions are centralized in a dedicated 
 
 ### Generic Views
 
-Django REST Framework generic views are used to reduce boilerplate while keeping the API implementation clear and maintainable.
+Django REST Framework generic views reduce boilerplate while keeping the API implementation clean and maintainable.
 
 ### React Query
 
-TanStack React Query manages server state, request caching, and loading/error handling for API interactions.
+TanStack React Query manages server state, request caching, loading states, and error handling for API interactions.
 
 ### Reusable Components
 
@@ -286,13 +290,12 @@ Next.js App Router dynamic routes (`/submissions/[id]`) are used for submission 
 
 ## Future Improvements
 
-- Submission status update controls in the frontend
 - Search by patient name
 - Optimistic UI updates
-- Automated tests
+- Automated backend and frontend tests
 - Authentication and authorization
 - Docker support
-- Production deployment configuration
+- CI/CD pipeline
 
 ---
 
@@ -300,4 +303,4 @@ Next.js App Router dynamic routes (`/submissions/[id]`) are used for submission 
 
 - The frontend consumes the Django REST Framework API exposed by the backend.
 - Sample submissions can be loaded using the provided Django management command.
-- The backend enforces submission status transition rules independently of the frontend to maintain data integrity.
+- The backend independently validates submission status transitions to ensure data integrity regardless of the client.
